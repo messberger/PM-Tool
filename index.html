@@ -93,11 +93,6 @@
             border-color: #FF8C00;
             box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
         }
-        .form-row {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 15px;
-        }
         button {
             padding: 12px 24px;
             font-size: 14px;
@@ -139,14 +134,13 @@
             background-color: #da190b;
             transform: translateY(-1px);
         }
-        .btn-add-project {
+        .btn-add-small {
             background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
             color: white;
             padding: 10px 16px;
             font-size: 13px;
-            margin-left: 10px;
         }
-        .btn-add-project:hover {
+        .btn-add-small:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
         }
@@ -197,19 +191,6 @@
             padding: 40px;
             font-style: italic;
         }
-        .project-selector {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .project-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #FFE0B2;
-        }
         .project-tag {
             display: flex;
             align-items: center;
@@ -220,6 +201,7 @@
             border-radius: 20px;
             font-size: 13px;
             font-weight: 500;
+            margin: 5px;
         }
         .project-tag button {
             background: rgba(255,255,255,0.3);
@@ -234,6 +216,40 @@
         }
         .project-tag button:hover {
             background: rgba(255,255,255,0.5);
+        }
+        .project-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #FFE0B2;
+        }
+        .add-project-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #FFE0B2;
+        }
+        .add-project-row input {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #FFE0B2;
+            border-radius: 8px;
+        }
+        .add-project-row button {
+            background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .add-project-row button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
         }
     </style>
 </head>
@@ -257,12 +273,9 @@
 
             <div class="form-group">
                 <label>Projekt</label>
-                <div class="project-selector">
-                    <select id="taskProject" style="flex: 1;">
-                        <option value="">-- Wählen --</option>
-                    </select>
-                    <button class="btn-add-project" onclick="openAddProjectDialog()">+ Projekt</button>
-                </div>
+                <select id="taskProject">
+                    <option value="">-- Wählen --</option>
+                </select>
             </div>
 
             <div class="form-group">
@@ -281,17 +294,9 @@
         <div class="input-panel" style="margin-top: 30px;">
             <div class="panel-title">⚙️ Projekte verwalten</div>
             <div class="project-list" id="projectList"></div>
-        </div>
-    </div>
-
-    <!-- Add Project Dialog -->
-    <div id="projectDialog" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
-        <div style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
-            <h2 style="color: #FF8C00; margin-bottom: 20px;">Neues Projekt erstellen</h2>
-            <input type="text" id="newProjectName" placeholder="Projektname" style="width: 100%; margin-bottom: 15px;">
-            <div style="display: flex; gap: 10px;">
-                <button onclick="closeAddProjectDialog()" style="flex: 1; background: #ccc; color: #333; border: none; padding: 12px; border-radius: 8px; cursor: pointer;">Abbrechen</button>
-                <button onclick="createProject()" style="flex: 1; background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Erstellen</button>
+            <div class="add-project-row">
+                <input type="text" id="newProjectInput" placeholder="Neues Projekt (z.B. Hafeninsel)">
+                <button onclick="createProject()">+ Projekt</button>
             </div>
         </div>
     </div>
@@ -351,18 +356,8 @@
             `).join('');
         }
 
-        function openAddProjectDialog() {
-            document.getElementById('projectDialog').style.display = 'flex';
-            document.getElementById('newProjectName').focus();
-        }
-
-        function closeAddProjectDialog() {
-            document.getElementById('projectDialog').style.display = 'none';
-            document.getElementById('newProjectName').value = '';
-        }
-
         async function createProject() {
-            const name = document.getElementById('newProjectName').value.trim();
+            const name = document.getElementById('newProjectInput').value.trim();
             if (!name) {
                 alert('Bitte Projektnamen eingeben!');
                 return;
@@ -374,7 +369,7 @@
                     .insert([{ name }]);
 
                 if (error) throw error;
-                closeAddProjectDialog();
+                document.getElementById('newProjectInput').value = '';
                 loadProjects();
             } catch (error) {
                 alert('Fehler: ' + error.message);
@@ -504,7 +499,7 @@
         // Enter-Taste
         document.addEventListener('keypress', (e) => {
             if (e.target.id === 'taskTitle' && e.key === 'Enter') addTask();
-            if (e.target.id === 'newProjectName' && e.key === 'Enter') createProject();
+            if (e.target.id === 'newProjectInput' && e.key === 'Enter') createProject();
         });
     </script>
 </body>
