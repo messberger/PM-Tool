@@ -1,15 +1,313 @@
 <!DOCTYPE html>
 <html lang="de">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1E5BA8" />
-    <meta name="description" content="PM-Tool - Projektmanagement mit Supabase" />
-    <title>PM-Tool</title>
-  </head>
-  <body>
-    <noscript>Du brauchst JavaScript um diese App zu nutzen.</noscript>
-    <div id="root"></div>
-    <script type="module" src="/src/index.js"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PM-Tool - Projektmanagement</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        h1 {
+            color: #1E5BA8;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .stats-box {
+            background-color: #f0f8ff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            border-left: 4px solid #1E5BA8;
+        }
+        .input-panel {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            border-left: 5px solid #1E5BA8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 14px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-primary {
+            width: 100%;
+            background-color: #1E5BA8;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #154386;
+        }
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        .list-panel {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            border-left: 5px solid #1E5BA8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-left: 3px solid #1E5BA8;
+            border-radius: 3px;
+        }
+        .task-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .task-meta {
+            font-size: 12px;
+            color: #666;
+        }
+        .button-group {
+            display: flex;
+            gap: 5px;
+        }
+        .loading {
+            text-align: center;
+            color: #999;
+        }
+        h2 {
+            color: #1E5BA8;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #1E5BA8;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Projekt Manager</h1>
+        
+        <div class="stats-box">
+            <div><strong>Offene Aufgaben:</strong> <span id="openCount">0</span></div>
+            <div><strong>Erledigt:</strong> <span id="doneCount">0</span></div>
+        </div>
+
+        <div class="input-panel">
+            <h2>➕ Neue Aufgabe</h2>
+            
+            <div class="form-group">
+                <label>Aufgabe</label>
+                <input type="text" id="taskTitle" placeholder="Was muss getan werden?">
+            </div>
+
+            <div class="form-group">
+                <label>Projekt</label>
+                <select id="taskProject">
+                    <option value="">-- Wählen --</option>
+                    <option value="Utzmannsbach">Utzmannsbach</option>
+                    <option value="Kastellstraße 86">Kastellstraße 86</option>
+                    <option value="Amberg">Amberg</option>
+                    <option value="Haus am Berg">Haus am Berg</option>
+                    <option value="Haus Amberg">Haus Amberg</option>
+                    <option value="Halle (Wittenberger)">Halle (Wittenberger)</option>
+                    <option value="Lindenfels">Lindenfels</option>
+                    <option value="Bad Schwalbach">Bad Schwalbach</option>
+                    <option value="Castelstraße 86">Castelstraße 86</option>
+                    <option value="Gleditschstraße 32">Gleditschstraße 32</option>
+                    <option value="Plasteblock 683">Plasteblock 683</option>
+                    <option value="Marketing & Social Media">Marketing & Social Media</option>
+                    <option value="Admin & Büro">Admin & Büro</option>
+                    <option value="Auto & Fahrtkosten">Auto & Fahrtkosten</option>
+                    <option value="Studio Messberger">Studio Messberger</option>
+                    <option value="KI Workshop">KI Workshop</option>
+                    <option value="Plaza Cleaning">Plaza Cleaning</option>
+                    <option value="Sonstiges">Sonstiges</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Fällig am</label>
+                <input type="date" id="taskDueDate">
+            </div>
+
+            <button class="btn-primary" onclick="addTask()">Aufgabe hinzufügen</button>
+        </div>
+
+        <div class="list-panel">
+            <h2>📌 Aufgaben (<span id="taskCount">0</span>)</h2>
+            <div id="tasksList" class="loading">Lädt...</div>
+        </div>
+    </div>
+
+    <script>
+        // Supabase Config
+        const SUPABASE_URL = 'https://xcyfbuujqqnhgquijtpq.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_w-zKJsjMPCdpPc5S2_uGkQ_47MV_mSN';
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // Load tasks on page load
+        window.addEventListener('load', () => {
+            loadTasks();
+        });
+
+        async function loadTasks() {
+            try {
+                const { data, error } = await supabase
+                    .from('tasks')
+                    .select('*')
+                    .order('due_date', { ascending: true, nullsLast: true });
+
+                if (error) throw error;
+                displayTasks(data || []);
+            } catch (error) {
+                console.error('Fehler:', error);
+                document.getElementById('tasksList').innerHTML = '<p style="color: red;">Fehler beim Laden: ' + error.message + '</p>';
+            }
+        }
+
+        function displayTasks(tasks) {
+            const openTasks = tasks.filter(t => !t.done);
+            const doneTasks = tasks.filter(t => t.done);
+
+            document.getElementById('openCount').textContent = openTasks.length;
+            document.getElementById('doneCount').textContent = doneTasks.length;
+            document.getElementById('taskCount').textContent = openTasks.length;
+
+            if (openTasks.length === 0) {
+                document.getElementById('tasksList').innerHTML = '<p style="color: #999; text-align: center;">Keine offenen Aufgaben! 🎉</p>';
+                return;
+            }
+
+            let html = '';
+            openTasks.forEach(task => {
+                const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString('de-DE') : 'Kein Datum';
+                html += `
+                    <div class="task-item">
+                        <div style="flex: 1;">
+                            <div class="task-title">${escapeHtml(task.title)}</div>
+                            ${task.project ? `<div class="task-meta">Projekt: <strong>${escapeHtml(task.project)}</strong></div>` : ''}
+                            ${task.due_date ? `<div class="task-meta">Fällig: ${dueDate}</div>` : ''}
+                        </div>
+                        <div class="button-group">
+                            <button class="btn-success" onclick="completeTask(${task.id})">✓ Fertig</button>
+                            <button class="btn-danger" onclick="deleteTask(${task.id})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('tasksList').innerHTML = html;
+        }
+
+        async function addTask() {
+            const title = document.getElementById('taskTitle').value.trim();
+            const project = document.getElementById('taskProject').value || null;
+            const dueDate = document.getElementById('taskDueDate').value || null;
+
+            if (!title) {
+                alert('Bitte Aufgabe eintragen!');
+                return;
+            }
+
+            try {
+                const { error } = await supabase.from('tasks').insert([
+                    { title, project, due_date: dueDate, done: false }
+                ]);
+
+                if (error) throw error;
+                
+                document.getElementById('taskTitle').value = '';
+                document.getElementById('taskProject').value = '';
+                document.getElementById('taskDueDate').value = '';
+                
+                loadTasks();
+            } catch (error) {
+                alert('Fehler: ' + error.message);
+            }
+        }
+
+        async function completeTask(id) {
+            try {
+                const { error } = await supabase.from('tasks').delete().eq('id', id);
+                if (error) throw error;
+                loadTasks();
+            } catch (error) {
+                alert('Fehler: ' + error.message);
+            }
+        }
+
+        async function deleteTask(id) {
+            if (!confirm('Aufgabe löschen?')) return;
+
+            try {
+                const { error } = await supabase.from('tasks').delete().eq('id', id);
+                if (error) throw error;
+                loadTasks();
+            } catch (error) {
+                alert('Fehler: ' + error.message);
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Enter-Taste zum Hinzufügen
+        document.getElementById('taskTitle').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') addTask();
+        });
+    </script>
+</body>
 </html>
