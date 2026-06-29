@@ -12,138 +12,243 @@
             box-sizing: border-box;
         }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe8cc 100%);
             color: #333;
+            min-height: 100vh;
+            padding: 20px;
         }
         .container {
             max-width: 1000px;
             margin: 0 auto;
-            padding: 30px;
         }
         h1 {
-            color: #1E5BA8;
+            color: #FF8C00;
             text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(255, 140, 0, 0.1);
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
             margin-bottom: 30px;
+            font-size: 14px;
         }
         .stats-box {
-            background-color: #f0f8ff;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            border-left: 4px solid #1E5BA8;
-        }
-        .input-panel {
-            background-color: #fff;
+            background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
             padding: 20px;
             margin-bottom: 30px;
-            border-radius: 5px;
-            border-left: 5px solid #1E5BA8;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            border-left: 5px solid #FF8C00;
+            box-shadow: 0 4px 15px rgba(255, 140, 0, 0.1);
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .stat-item {
+            font-size: 16px;
+            color: #333;
+        }
+        .stat-item strong {
+            color: #FF8C00;
+            font-size: 24px;
+        }
+        .input-panel {
+            background: white;
+            padding: 30px;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.15);
+            border-top: 5px solid #FF8C00;
+        }
+        .panel-title {
+            color: #FF8C00;
+            font-size: 20px;
+            margin-bottom: 20px;
+            font-weight: 600;
+            border-bottom: 2px solid #FFE0B2;
+            padding-bottom: 10px;
         }
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
         label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
         }
         input, select {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             font-size: 14px;
-            border: 1px solid #ccc;
-            border-radius: 3px;
-            font-family: Arial, sans-serif;
+            border: 2px solid #FFE0B2;
+            border-radius: 8px;
+            font-family: 'Segoe UI', sans-serif;
+            transition: all 0.3s;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: #FF8C00;
+            box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
         }
         button {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 14px;
             border: none;
-            border-radius: 3px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            transition: all 0.3s;
         }
         .btn-primary {
             width: 100%;
-            background-color: #1E5BA8;
+            background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
             color: white;
+            font-size: 16px;
+            padding: 14px;
         }
         .btn-primary:hover {
-            background-color: #154386;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 140, 0, 0.3);
         }
         .btn-success {
-            background-color: #28a745;
+            background-color: #4CAF50;
             color: white;
-            padding: 5px 10px;
+            padding: 8px 14px;
             font-size: 12px;
         }
         .btn-success:hover {
-            background-color: #218838;
+            background-color: #45a049;
+            transform: translateY(-1px);
         }
         .btn-danger {
-            background-color: #dc3545;
+            background-color: #f44336;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 10px;
             font-size: 12px;
+            width: auto;
         }
         .btn-danger:hover {
-            background-color: #c82333;
+            background-color: #da190b;
+            transform: translateY(-1px);
+        }
+        .btn-add-project {
+            background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
+            color: white;
+            padding: 10px 16px;
+            font-size: 13px;
+            margin-left: 10px;
+        }
+        .btn-add-project:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
         }
         .list-panel {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            border-left: 5px solid #1E5BA8;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(255, 140, 0, 0.15);
+            border-top: 5px solid #FF8C00;
         }
         .task-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px;
-            margin-bottom: 10px;
-            background-color: #f9f9f9;
-            border-left: 3px solid #1E5BA8;
-            border-radius: 3px;
+            padding: 18px;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #FFF9F5 0%, #FFF5EE 100%);
+            border-left: 4px solid #FF8C00;
+            border-radius: 10px;
+            transition: all 0.3s;
+            border: 1px solid #FFE0B2;
+        }
+        .task-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.15);
         }
         .task-title {
-            font-weight: bold;
-            margin-bottom: 5px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
         }
         .task-meta {
             font-size: 12px;
-            color: #666;
+            color: #999;
+            margin: 4px 0;
+        }
+        .task-meta strong {
+            color: #FF8C00;
         }
         .button-group {
             display: flex;
-            gap: 5px;
+            gap: 8px;
+            flex-shrink: 0;
         }
         .loading {
             text-align: center;
             color: #999;
+            padding: 40px;
+            font-style: italic;
         }
-        h2 {
-            color: #1E5BA8;
-            font-size: 18px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #1E5BA8;
-            padding-bottom: 10px;
+        .project-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .project-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #FFE0B2;
+        }
+        .project-tag {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        .project-tag button {
+            background: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            width: auto;
+            padding: 2px 6px;
+            margin: 0;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 14px;
+        }
+        .project-tag button:hover {
+            background: rgba(255,255,255,0.5);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>📋 Projekt Manager</h1>
+        <div class="subtitle">Dein digitales Taskmanagement System</div>
         
         <div class="stats-box">
-            <div><strong>Offene Aufgaben:</strong> <span id="openCount">0</span></div>
-            <div><strong>Erledigt:</strong> <span id="doneCount">0</span></div>
+            <div class="stat-item">📌 Offene Aufgaben: <strong id="openCount">0</strong></div>
+            <div class="stat-item">✅ Erledigt: <strong id="doneCount">0</strong></div>
         </div>
 
         <div class="input-panel">
-            <h2>➕ Neue Aufgabe</h2>
+            <div class="panel-title">➕ Neue Aufgabe</div>
             
             <div class="form-group">
                 <label>Aufgabe</label>
@@ -152,24 +257,12 @@
 
             <div class="form-group">
                 <label>Projekt</label>
-                <select id="taskProject">
-                    <option value="">-- Wählen --</option>
-                    <option value="Utzmannsbach">Utzmannsbach</option>
-                    <option value="Haus Mulzer">Haus Mulzer</option>
-                    <option value="Castellstraße 86">Castellstraße 86</option>
-                    <option value="Halle (Wittenberger)">Halle (Wittenberger)</option>
-                    <option value="Lindenfels">Lindenfels</option>
-                    <option value="Bad Schwalbach">Bad Schwalbach</option>
-                    <option value="Gleditschstraße 32">Gleditschstraße 32</option>
-                    <option value="Plasteblock 683">Plasteblock 683</option>
-                    <option value="Marketing & Social Media">Marketing & Social Media</option>
-                    <option value="Admin & Büro">Admin & Büro</option>
-                    <option value="Auto & Fahrtkosten">Auto & Fahrtkosten</option>
-                    <option value="Studio Messberger">Studio Messberger</option>
-                    <option value="KI Workshop">KI Workshop</option>
-                    <option value="Plaza Cleaning">Plaza Cleaning</option>
-                    <option value="Sonstiges">Sonstiges</option>
-                </select>
+                <div class="project-selector">
+                    <select id="taskProject" style="flex: 1;">
+                        <option value="">-- Wählen --</option>
+                    </select>
+                    <button class="btn-add-project" onclick="openAddProjectDialog()">+ Projekt</button>
+                </div>
             </div>
 
             <div class="form-group">
@@ -181,8 +274,25 @@
         </div>
 
         <div class="list-panel">
-            <h2>📌 Aufgaben (<span id="taskCount">0</span>)</h2>
+            <div class="panel-title">📌 Aufgaben (<span id="taskCount">0</span>)</div>
             <div id="tasksList" class="loading">Lädt...</div>
+        </div>
+
+        <div class="input-panel" style="margin-top: 30px;">
+            <div class="panel-title">⚙️ Projekte verwalten</div>
+            <div class="project-list" id="projectList"></div>
+        </div>
+    </div>
+
+    <!-- Add Project Dialog -->
+    <div id="projectDialog" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000;">
+        <div style="background: white; padding: 30px; border-radius: 15px; width: 90%; max-width: 400px; box-shadow: 0 20px 60px rgba(0,0,0,0.3);">
+            <h2 style="color: #FF8C00; margin-bottom: 20px;">Neues Projekt erstellen</h2>
+            <input type="text" id="newProjectName" placeholder="Projektname" style="width: 100%; margin-bottom: 15px;">
+            <div style="display: flex; gap: 10px;">
+                <button onclick="closeAddProjectDialog()" style="flex: 1; background: #ccc; color: #333; border: none; padding: 12px; border-radius: 8px; cursor: pointer;">Abbrechen</button>
+                <button onclick="createProject()" style="flex: 1; background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: 600;">Erstellen</button>
+            </div>
         </div>
     </div>
 
@@ -193,11 +303,101 @@
         const { createClient } = window.supabase;
         const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Load tasks on page load
+        // Load on page load
         window.addEventListener('load', () => {
+            loadProjects();
             loadTasks();
         });
 
+        // ===== PROJECTS =====
+        async function loadProjects() {
+            try {
+                const { data, error } = await supabase
+                    .from('projects')
+                    .select('*')
+                    .order('name', { ascending: true });
+
+                if (error) throw error;
+                
+                displayProjectsInSelect(data || []);
+                displayProjectsTags(data || []);
+            } catch (error) {
+                console.error('Fehler:', error);
+            }
+        }
+
+        function displayProjectsInSelect(projects) {
+            const select = document.getElementById('taskProject');
+            select.innerHTML = '<option value="">-- Wählen --</option>';
+            projects.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.name;
+                opt.textContent = p.name;
+                select.appendChild(opt);
+            });
+        }
+
+        function displayProjectsTags(projects) {
+            const projectList = document.getElementById('projectList');
+            if (projects.length === 0) {
+                projectList.innerHTML = '<p style="color: #999; font-style: italic;">Keine Projekte vorhanden</p>';
+                return;
+            }
+            projectList.innerHTML = projects.map(p => `
+                <div class="project-tag">
+                    ${p.name}
+                    <button onclick="deleteProject(${p.id})" title="Löschen">×</button>
+                </div>
+            `).join('');
+        }
+
+        function openAddProjectDialog() {
+            document.getElementById('projectDialog').style.display = 'flex';
+            document.getElementById('newProjectName').focus();
+        }
+
+        function closeAddProjectDialog() {
+            document.getElementById('projectDialog').style.display = 'none';
+            document.getElementById('newProjectName').value = '';
+        }
+
+        async function createProject() {
+            const name = document.getElementById('newProjectName').value.trim();
+            if (!name) {
+                alert('Bitte Projektnamen eingeben!');
+                return;
+            }
+
+            try {
+                const { error } = await supabase
+                    .from('projects')
+                    .insert([{ name }]);
+
+                if (error) throw error;
+                closeAddProjectDialog();
+                loadProjects();
+            } catch (error) {
+                alert('Fehler: ' + error.message);
+            }
+        }
+
+        async function deleteProject(id) {
+            if (!confirm('Projekt löschen?')) return;
+
+            try {
+                const { error } = await supabase
+                    .from('projects')
+                    .delete()
+                    .eq('id', id);
+
+                if (error) throw error;
+                loadProjects();
+            } catch (error) {
+                alert('Fehler: ' + error.message);
+            }
+        }
+
+        // ===== TASKS =====
         async function loadTasks() {
             try {
                 const { data, error } = await supabase
@@ -233,8 +433,8 @@
                     <div class="task-item">
                         <div style="flex: 1;">
                             <div class="task-title">${escapeHtml(task.title)}</div>
-                            ${task.project ? `<div class="task-meta">Projekt: <strong>${escapeHtml(task.project)}</strong></div>` : ''}
-                            ${task.due_date ? `<div class="task-meta">Fällig: ${dueDate}</div>` : ''}
+                            ${task.project ? `<div class="task-meta">📁 <strong>${escapeHtml(task.project)}</strong></div>` : ''}
+                            ${task.due_date ? `<div class="task-meta">📅 ${dueDate}</div>` : ''}
                         </div>
                         <div class="button-group">
                             <button class="btn-success" onclick="completeTask(${task.id})">✓ Fertig</button>
@@ -301,9 +501,10 @@
             return div.innerHTML;
         }
 
-        // Enter-Taste zum Hinzufügen
-        document.getElementById('taskTitle').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') addTask();
+        // Enter-Taste
+        document.addEventListener('keypress', (e) => {
+            if (e.target.id === 'taskTitle' && e.key === 'Enter') addTask();
+            if (e.target.id === 'newProjectName' && e.key === 'Enter') createProject();
         });
     </script>
 </body>
