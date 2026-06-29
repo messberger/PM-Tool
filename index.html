@@ -121,7 +121,6 @@
         }
         .btn-success:hover {
             background-color: #45a049;
-            transform: translateY(-1px);
         }
         .btn-danger {
             background-color: #f44336;
@@ -132,17 +131,6 @@
         }
         .btn-danger:hover {
             background-color: #da190b;
-            transform: translateY(-1px);
-        }
-        .btn-add-small {
-            background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
-            color: white;
-            padding: 10px 16px;
-            font-size: 13px;
-        }
-        .btn-add-small:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
         }
         .list-panel {
             background: white;
@@ -160,7 +148,6 @@
             background: linear-gradient(135deg, #FFF9F5 0%, #FFF5EE 100%);
             border-left: 4px solid #FF8C00;
             border-radius: 10px;
-            transition: all 0.3s;
             border: 1px solid #FFE0B2;
         }
         .task-item:hover {
@@ -170,29 +157,22 @@
         .task-title {
             font-weight: 600;
             margin-bottom: 8px;
-            color: #333;
         }
         .task-meta {
             font-size: 12px;
             color: #999;
-            margin: 4px 0;
-        }
-        .task-meta strong {
-            color: #FF8C00;
         }
         .button-group {
             display: flex;
             gap: 8px;
-            flex-shrink: 0;
         }
         .loading {
             text-align: center;
             color: #999;
             padding: 40px;
-            font-style: italic;
         }
         .project-tag {
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 6px;
             background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
@@ -208,48 +188,66 @@
             border: none;
             color: white;
             width: auto;
-            padding: 2px 6px;
-            margin: 0;
+            padding: 0 4px;
             cursor: pointer;
-            border-radius: 50%;
             font-size: 14px;
         }
         .project-tag button:hover {
             background: rgba(255,255,255,0.5);
         }
         .project-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #FFE0B2;
+            text-align: center;
         }
-        .add-project-row {
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .modal-content h2 {
+            color: #FF8C00;
+            margin-bottom: 20px;
+        }
+        .modal-content input {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        .modal-buttons {
             display: flex;
             gap: 10px;
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #FFE0B2;
         }
-        .add-project-row input {
+        .modal-buttons button {
             flex: 1;
-            padding: 10px;
-            border: 2px solid #FFE0B2;
-            border-radius: 8px;
-        }
-        .add-project-row button {
-            background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
-            color: white;
-            padding: 10px 16px;
+            padding: 12px;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             font-weight: 600;
         }
-        .add-project-row button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+        .modal-btn-cancel {
+            background: #ccc;
+            color: #333;
+        }
+        .modal-btn-confirm {
+            background: linear-gradient(135deg, #FF8C00 0%, #FF9500 100%);
+            color: white;
         }
     </style>
 </head>
@@ -261,6 +259,12 @@
         <div class="stats-box">
             <div class="stat-item">📌 Offene Aufgaben: <strong id="openCount">0</strong></div>
             <div class="stat-item">✅ Erledigt: <strong id="doneCount">0</strong></div>
+        </div>
+
+        <div class="input-panel">
+            <div class="panel-title">⚙️ Projekte verwalten</div>
+            <div class="project-list" id="projectList"></div>
+            <button class="btn-primary" onclick="openAddProjectDialog()" style="margin-top: 20px;">+ Neues Projekt</button>
         </div>
 
         <div class="input-panel">
@@ -290,45 +294,58 @@
             <div class="panel-title">📌 Aufgaben (<span id="taskCount">0</span>)</div>
             <div id="tasksList" class="loading">Lädt...</div>
         </div>
+    </div>
 
-        <div class="input-panel" style="margin-top: 30px;">
-            <div class="panel-title">⚙️ Projekte verwalten</div>
-            <div class="project-list" id="projectList"></div>
-            <div class="add-project-row">
-                <input type="text" id="newProjectInput" placeholder="Neues Projekt (z.B. Hafeninsel)">
-                <button onclick="createProject()">+ Projekt</button>
+    <!-- Modal für neues Projekt -->
+    <div id="projectDialog" class="modal">
+        <div class="modal-content">
+            <h2>Neues Projekt erstellen</h2>
+            <input type="text" id="newProjectName" placeholder="Projektname (z.B. Hafeninsel)">
+            <div class="modal-buttons">
+                <button class="modal-btn-cancel" onclick="closeAddProjectDialog()">Abbrechen</button>
+                <button class="modal-btn-confirm" onclick="createProject()">Erstellen</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Supabase Config
         const SUPABASE_URL = 'https://xcyfbuujqqnhgquijtpq.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_w-zKJsjMPCdpPc5S2_uGkQ_47MV_mSN';
         const { createClient } = window.supabase;
         const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Load on page load
         window.addEventListener('load', () => {
             loadProjects();
             loadTasks();
         });
 
-        // ===== PROJECTS =====
+        // PROJECTS
         async function loadProjects() {
             try {
                 const { data, error } = await supabase
                     .from('projects')
                     .select('*')
-                    .order('name', { ascending: true });
-
+                    .order('name');
                 if (error) throw error;
-                
+                displayProjects(data || []);
                 displayProjectsInSelect(data || []);
-                displayProjectsTags(data || []);
             } catch (error) {
                 console.error('Fehler:', error);
             }
+        }
+
+        function displayProjects(projects) {
+            const list = document.getElementById('projectList');
+            if (projects.length === 0) {
+                list.innerHTML = '<p style="color: #999;">Keine Projekte vorhanden</p>';
+                return;
+            }
+            list.innerHTML = projects.map(p => `
+                <div class="project-tag">
+                    ${p.name}
+                    <button onclick="deleteProject(${p.id})">×</button>
+                </div>
+            `).join('');
         }
 
         function displayProjectsInSelect(projects) {
@@ -342,34 +359,26 @@
             });
         }
 
-        function displayProjectsTags(projects) {
-            const projectList = document.getElementById('projectList');
-            if (projects.length === 0) {
-                projectList.innerHTML = '<p style="color: #999; font-style: italic;">Keine Projekte vorhanden</p>';
-                return;
-            }
-            projectList.innerHTML = projects.map(p => `
-                <div class="project-tag">
-                    ${p.name}
-                    <button onclick="deleteProject(${p.id})" title="Löschen">×</button>
-                </div>
-            `).join('');
+        function openAddProjectDialog() {
+            document.getElementById('projectDialog').classList.add('show');
+            document.getElementById('newProjectName').focus();
+        }
+
+        function closeAddProjectDialog() {
+            document.getElementById('projectDialog').classList.remove('show');
+            document.getElementById('newProjectName').value = '';
         }
 
         async function createProject() {
-            const name = document.getElementById('newProjectInput').value.trim();
+            const name = document.getElementById('newProjectName').value.trim();
             if (!name) {
-                alert('Bitte Projektnamen eingeben!');
+                alert('Bitte Projektname eingeben!');
                 return;
             }
-
             try {
-                const { error } = await supabase
-                    .from('projects')
-                    .insert([{ name }]);
-
+                const { error } = await supabase.from('projects').insert([{ name }]);
                 if (error) throw error;
-                document.getElementById('newProjectInput').value = '';
+                closeAddProjectDialog();
                 loadProjects();
             } catch (error) {
                 alert('Fehler: ' + error.message);
@@ -378,13 +387,8 @@
 
         async function deleteProject(id) {
             if (!confirm('Projekt löschen?')) return;
-
             try {
-                const { error } = await supabase
-                    .from('projects')
-                    .delete()
-                    .eq('id', id);
-
+                const { error } = await supabase.from('projects').delete().eq('id', id);
                 if (error) throw error;
                 loadProjects();
             } catch (error) {
@@ -392,47 +396,43 @@
             }
         }
 
-        // ===== TASKS =====
+        // TASKS
         async function loadTasks() {
             try {
                 const { data, error } = await supabase
                     .from('tasks')
                     .select('*')
                     .order('due_date', { ascending: true, nullsLast: true });
-
                 if (error) throw error;
                 displayTasks(data || []);
             } catch (error) {
-                console.error('Fehler:', error);
-                document.getElementById('tasksList').innerHTML = '<p style="color: red;">Fehler beim Laden: ' + error.message + '</p>';
+                document.getElementById('tasksList').innerHTML = '<p style="color: red;">Fehler: ' + error.message + '</p>';
             }
         }
 
         function displayTasks(tasks) {
-            const openTasks = tasks.filter(t => !t.done);
-            const doneTasks = tasks.filter(t => t.done);
+            const open = tasks.filter(t => !t.done);
+            document.getElementById('openCount').textContent = open.length;
+            document.getElementById('doneCount').textContent = tasks.filter(t => t.done).length;
+            document.getElementById('taskCount').textContent = open.length;
 
-            document.getElementById('openCount').textContent = openTasks.length;
-            document.getElementById('doneCount').textContent = doneTasks.length;
-            document.getElementById('taskCount').textContent = openTasks.length;
-
-            if (openTasks.length === 0) {
+            if (open.length === 0) {
                 document.getElementById('tasksList').innerHTML = '<p style="color: #999; text-align: center;">Keine offenen Aufgaben! 🎉</p>';
                 return;
             }
 
             let html = '';
-            openTasks.forEach(task => {
+            open.forEach(task => {
                 const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString('de-DE') : 'Kein Datum';
                 html += `
                     <div class="task-item">
-                        <div style="flex: 1;">
-                            <div class="task-title">${escapeHtml(task.title)}</div>
-                            ${task.project ? `<div class="task-meta">📁 <strong>${escapeHtml(task.project)}</strong></div>` : ''}
+                        <div>
+                            <div class="task-title">${task.title}</div>
+                            ${task.project ? `<div class="task-meta">📁 ${task.project}</div>` : ''}
                             ${task.due_date ? `<div class="task-meta">📅 ${dueDate}</div>` : ''}
                         </div>
                         <div class="button-group">
-                            <button class="btn-success" onclick="completeTask(${task.id})">✓ Fertig</button>
+                            <button class="btn-success" onclick="completeTask(${task.id})">✓</button>
                             <button class="btn-danger" onclick="deleteTask(${task.id})">🗑️</button>
                         </div>
                     </div>
@@ -455,13 +455,10 @@
                 const { error } = await supabase.from('tasks').insert([
                     { title, project, due_date: dueDate, done: false }
                 ]);
-
                 if (error) throw error;
-                
                 document.getElementById('taskTitle').value = '';
                 document.getElementById('taskProject').value = '';
                 document.getElementById('taskDueDate').value = '';
-                
                 loadTasks();
             } catch (error) {
                 alert('Fehler: ' + error.message);
@@ -470,8 +467,7 @@
 
         async function completeTask(id) {
             try {
-                const { error } = await supabase.from('tasks').delete().eq('id', id);
-                if (error) throw error;
+                await supabase.from('tasks').delete().eq('id', id);
                 loadTasks();
             } catch (error) {
                 alert('Fehler: ' + error.message);
@@ -480,26 +476,21 @@
 
         async function deleteTask(id) {
             if (!confirm('Aufgabe löschen?')) return;
-
             try {
-                const { error } = await supabase.from('tasks').delete().eq('id', id);
-                if (error) throw error;
+                await supabase.from('tasks').delete().eq('id', id);
                 loadTasks();
             } catch (error) {
                 alert('Fehler: ' + error.message);
             }
         }
 
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        // Enter-Taste
         document.addEventListener('keypress', (e) => {
             if (e.target.id === 'taskTitle' && e.key === 'Enter') addTask();
-            if (e.target.id === 'newProjectInput' && e.key === 'Enter') createProject();
+            if (e.target.id === 'newProjectName' && e.key === 'Enter') createProject();
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target.id === 'projectDialog') closeAddProjectDialog();
         });
     </script>
 </body>
